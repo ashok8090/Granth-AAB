@@ -67,8 +67,7 @@ jobs:
           set -euo pipefail
           test -f android/signing/satlok.keystore
           test -f android/key.properties
-          # google-services.json is optional and is not in this repo.
-          rm -f android/app/google-services.json
+          test -f android/app/google-services.json
 
       - name: Build arm64 APK and AAB
         if: env.DO_SIGN == 'true'

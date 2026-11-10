@@ -64,9 +64,6 @@ key.properties
 test/fixtures/*.whl
 android/build/
 
-# Firebase config (contains API keys)
-android/app/google-services.json
-
 # Clean migration: never include wheels or generated build material
 *.whl
 **/build/

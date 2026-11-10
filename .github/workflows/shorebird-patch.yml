@@ -34,7 +34,7 @@ jobs:
           set -euo pipefail
           test -f android/signing/satlok.keystore
           test -f android/key.properties
-          rm -f android/app/google-services.json
+          test -f android/app/google-services.json
 
       - name: Publish patch
         env:
