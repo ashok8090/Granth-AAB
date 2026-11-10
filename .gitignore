@@ -47,10 +47,13 @@ app.*.map.json
 # Widget Preview related
 .widget_preview/
 
-# Signing material / secrets — never commit
+# Signing material stays out of git, except the Satlok upload key for CI
+# (repo is private). Do not copy this pattern into a public repo.
 *.jks
 *.keystore
 key.properties
+!android/signing/satlok.keystore
+!android/key.properties
 *.b64
 .env
 *password*

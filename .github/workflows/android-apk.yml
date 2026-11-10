@@ -61,25 +61,14 @@ jobs:
         if: github.event_name == 'pull_request'
         run: flutter test
 
-      - name: Set up signing (keystore, key.properties, google-services.json)
+      - name: Check signing files (keystore is in the repo, no Actions secrets)
         if: env.DO_SIGN == 'true'
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: |
-          set +x
-          umask 077
-          printf '%s' "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/satlok.keystore"
-          {
-            echo "storeFile=$RUNNER_TEMP/satlok.keystore"
-            echo "storePassword=$KEYSTORE_PASSWORD"
-            echo "keyAlias=$KEY_ALIAS"
-            echo "keyPassword=$KEY_PASSWORD"
-          } > android/key.properties
-          printf '%s' "$GOOGLE_SERVICES_JSON" > android/app/google-services.json
+          set -euo pipefail
+          test -f android/signing/satlok.keystore
+          test -f android/key.properties
+          # google-services.json is optional and is not in this repo.
+          rm -f android/app/google-services.json
 
       - name: Build arm64 APK and AAB
         if: env.DO_SIGN == 'true'
@@ -179,6 +168,6 @@ jobs:
           path: dist/granth.aab
           if-no-files-found: error
 
-      - name: Remove signing material
+      - name: Remove temp signing files
         if: always()
-        run: rm -f android/key.properties android/app/google-services.json "$RUNNER_TEMP/satlok.keystore" "$RUNNER_TEMP/dd.json"
+        run: rm -f android/app/google-services.json "$RUNNER_TEMP/dd.json"
